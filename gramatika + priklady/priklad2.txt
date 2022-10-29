@@ -1,0 +1,8 @@
+let s1: string = "Toto je string";
+
+log("Zadejte cislo: "); 
+let s2: string = readLine();  
+let n: int = toInt(s2);
+let s3: string = toString(n);
+let s4: string = readFile("inputFile.tx");
+writeFile("outputFile.txt", s4);

@@ -1,0 +1,24 @@
+let a: double = 5.5;
+let b: int = 2;
+let c: int = 0;
+let d: double;
+
+a = pow(a);
+c = multiply(a, b);
+uselessFunction();
+
+function pow(a: double): double{
+    return multiply(a, a);    
+}
+
+function multiply(a: double, b: double): double{
+    return a * b;
+}
+
+function uselessFunction(): void{
+    
+}
+
+function recursion(): string{
+    return recursion();
+}

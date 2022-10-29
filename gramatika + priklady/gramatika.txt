@@ -1,0 +1,23 @@
+program = { statement } $ ;
+ 
+statement = { functionCall ";" | let | if | while | ident "=" ( expression | functionCall ) ";" | functionDeclaration } ;
+
+let = "let" ident ":" type [ "=" [expression | functionCall ] ]";"  ;
+if = "if" "(" condition ")" "{" statement "}" [ "else" "{" statement "}" ] ;
+while = "while" "(" condition ")" "{" statement "}" ;
+
+functionDeclaration = "function" ident "(" {ident ":" type [ "," ]}  ")" ":" funType "{" { statement } [  "return" expression ";" 
+| "return" statement ";" | "return" functionCall ]  "}" ;
+functionCall = [ "+" | "-" ] ident "(" { expression [ "," ]}  ")" ;
+
+condition =  "true" | "false" | expression ( "==" | "!=" | ">" | "<" | "<=" | ">=" ) expression | ident ;
+expression = [ "+" | "-" ] term { ("+" | "-" ) term } ;
+term = factor { ( "*" | "/" ) factor } ;
+factor = string | realNum | num | ident  | "(" expression ")" | functionCall ;
+
+string = '"' /[a-zA-Z0-9 :!?+-.:*%<>=&#@$ß§]+/ '"' | functionCall ;
+ident = /[a-zA-Z0-9]+/ ; 
+realNum = num "." num ;
+num = /[0-9]+/ ;
+type = "string" | "int" | "double" | "boolean" ;
+funType = type | "void" ;
