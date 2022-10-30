@@ -13,7 +13,13 @@ namespace SemPrace_BTEJA_BCSH2.Parser
         public Program Parse(List<Token> tokens)
         {
             Tokens = tokens;
-            return new Program();
+            List<Statement> statements = new List<Statement>();
+            while (PeekToken() != null)
+            {
+                statements.Add(ReadStatement());
+            }
+            Program program = new Program(statements);
+            return program;
         }
 
         public Statement ReadStatement()
@@ -60,12 +66,18 @@ namespace SemPrace_BTEJA_BCSH2.Parser
             Token ident = ReadToken();
             Statement statement;
             if (PeekToken().Type == TokenType.Left_Bracket)
+            {
                 statement = ReadFunctionCallStatement(ident);
+            }
             else if (PeekToken().Type == TokenType.Equal)
+            {
                 statement = ReadSetStatement(ident);
+            }
             else
-                UnexpectedTokenError(ReadToken()); return null;
-
+            {
+                UnexpectedTokenError(ReadToken());
+                return null;
+            }
             CheckToken(ReadToken(), TokenType.Semi_Colon); // ;
             return statement;
         }
