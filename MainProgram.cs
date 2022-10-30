@@ -14,6 +14,3 @@ List<Token> tokens = lexer.ScanTokens(input);
 
 Parser parser = new Parser();
 parser.Parse(tokens);
-
-Condition ex = parser.ReadCondition();
-Console.WriteLine();

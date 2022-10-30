@@ -198,7 +198,7 @@ namespace SemPrace_BTEJA_BCSH2
             {
                 value += Advance();
             }
-            tokens.Add(new Token(TokenType.String, value, line));
+            tokens.Add(new Token(TokenType.String_Value, value, line));
             Advance();
         }
 

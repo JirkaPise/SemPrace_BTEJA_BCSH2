@@ -13,13 +13,20 @@ namespace SemPrace_BTEJA_BCSH2.Parser
 
         public object? Value { get; set; }
 
-        private TokenType? Type { get; set; }
+        public TokenType Type { get; set; }
 
         public Expression? Expression { get; set; }
 
+        public FunctionCallStatement FunctionCallStatement { get; set; }
+
+        public Factor(FunctionCallStatement functionCallStatement)
+        {
+            FunctionCallStatement = functionCallStatement;
+        }
+
         public Factor(Token token)
         {
-            if (token == null || token.Value == null)
+            if (token == null)
                 Parser.UnexpectedTokenError(token);
 
             Type = token.Type;
