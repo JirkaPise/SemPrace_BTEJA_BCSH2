@@ -1,4 +1,6 @@
 ﻿
+using SemPrace_BTEJA_BCSH2.Interpreter;
+
 namespace SemPrace_BTEJA_BCSH2.Parser
 {
     public class FunctionDeclarationStatement : Statement
@@ -24,6 +26,15 @@ namespace SemPrace_BTEJA_BCSH2.Parser
             ReturnType = returnType;
             Statements = statements;
             ReturnExpression = returnExpression;
+        }
+
+        public override void Evaluate(ExecutionCntxt context)
+        {
+            if (context.GetFunction(Identifier) != null)
+                throw new Exception("Funkce " + Identifier + " already exists");
+
+            context.ProgramContext.Functions.Add(new Function(Identifier,
+                Arguments, ReturnType, Statements, ReturnExpression));
         }
     }
 }

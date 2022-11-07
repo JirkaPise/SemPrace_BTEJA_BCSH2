@@ -8,7 +8,7 @@ namespace SemPrace_BTEJA_BCSH2.Parser
 {
     public class Parser
     {
-        private List<Token> Tokens { get; set; }
+        public List<Token> Tokens { get; set; }
 
         public Program Parse(List<Token> tokens)
         {

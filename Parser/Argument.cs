@@ -3,7 +3,8 @@
     public class Argument
     {
         public string Identifier { get; set; }
-        public Token Token { get; set; }
+        public TokenType Type { get; set; }
+        public object? Value { get; set; }
 
         public Argument(Token identifier, Token token)
         {
@@ -11,11 +12,12 @@
                 Parser.UnexpectedTokenError(identifier, TokenType.Ident);
 
             Identifier = identifier.Value;
-            Token = token;
 
-            if (!Parser.IsReturnableType(Token))
+            if (!Parser.IsReturnableType(token))
                 throw new Exception("Argument must be type int or double or string or boolean" +
                     "\nError on line: " + token.Line);
+
+            Type = token.Type;
         }
     }
 }

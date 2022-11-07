@@ -4,5 +4,5 @@ log("Zadejte cislo: ");
 let s2: string = readLine();  
 let n: int = toInt(s2);
 let s3: string = toString(n);
-let s4: string = readFile("inputFile.tx");
+let s4: string = readFile("inputFile.txt");
 writeFile("outputFile.txt", s4);

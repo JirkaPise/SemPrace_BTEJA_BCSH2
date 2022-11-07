@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SemPrace_BTEJA_BCSH2.Interpreter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace SemPrace_BTEJA_BCSH2.Parser
         public Factor Factor1 { get; set; } //main factor
         public Token? Token { get; set; } // * or /
         public Factor? Factor2 { get; set; } //secondary factor
+        public TokenType Type { get; set; }
 
         public Term(Factor factor1)
         {
@@ -47,7 +49,53 @@ namespace SemPrace_BTEJA_BCSH2.Parser
             }
         }
 
+        public object? Evaluate(ExecutionCntxt context)
+        {
+            object? value = Factor1.Evaluate(context);
+            Type = Factor1.Type;
 
+            if (Type != TokenType.Number && Type != TokenType.Real_Number)
+                return value;
+
+            if (Factor2 != null)
+            {
+                if (Token.Type == TokenType.Slash)
+                {
+                    if (Type == TokenType.Real_Number)
+                        value = (double)value / (double)Factor2.Evaluate(context);
+                    if (Type == TokenType.Number)
+                        value = (int)value / (int)Factor2.Evaluate(context);
+                }
+                else if (Token.Type == TokenType.Star)
+                {
+                    if (Type == TokenType.Real_Number)
+                        value = (double)value * (double)Factor2.Evaluate(context);
+                    if (Type == TokenType.Number)
+                        value = (int)value * (int)Factor2.Evaluate(context);
+                }
+            }
+            else if (TermPrev != null)
+            {
+                if (Token.Type == TokenType.Slash)
+                {
+                    if (Type == TokenType.Real_Number)
+                        value = (double)TermPrev.Evaluate(context) / (double)value;
+                    if (Type == TokenType.Number)
+                        value = (int)TermPrev.Evaluate(context) / (int)value;
+                }
+                else if (Token.Type == TokenType.Star)
+                {
+                    if (Type == TokenType.Real_Number)
+                        value = (double)TermPrev.Evaluate(context) * (double)value;
+                    if (Type == TokenType.Number)
+                        value = (int)TermPrev.Evaluate(context) * (int)value;
+                }
+            }
+
+            if (Factor1.Type == TokenType.Number)
+                return (int)value;
+            return value;
+        }
 
     }
 }

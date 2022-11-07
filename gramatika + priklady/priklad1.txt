@@ -3,13 +3,13 @@ let n2: double = 5.5;
 let b1: boolean = false;
 
 if(b1){
-    n1 = -n2;
+    n1 = -2;
 }
 
 if(n1 == n2){
-    n1 = n1 + n2 * 2; 
+    n1 = n1 + n1 * 2; 
 } else {
-    n2 = n1;
+    n2 = 1.0 + 2.3;
 }
 
 while(n1 < 10){

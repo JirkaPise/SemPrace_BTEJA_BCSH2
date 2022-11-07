@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SemPrace_BTEJA_BCSH2.Interpreter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -37,6 +38,38 @@ namespace SemPrace_BTEJA_BCSH2.Parser
             {
                 Parser.UnexpectedTokenError(token);
             }
+        }
+
+        public bool Evaluate(ExecutionCntxt context)
+        {
+            if (Factor != null)
+                return (bool)Factor.Evaluate(context);
+
+            object Value1 = Expression1.Evaluate(context);
+            object Value2 = Expression2.Evaluate(context);
+
+            if (Expression1.Type == TokenType.String_Value || Expression2.Type == TokenType.String_Value)
+            {
+                throw new Exception("Cannot compare strings");
+            }
+
+            double v1 = Convert.ToDouble(Value1);
+            double v2 = Convert.ToDouble(Value2);
+            if (Token.Type == TokenType.Equal_Equal)
+                return v1 == v2;
+            else if (Token.Type == TokenType.Not_Equal)
+                return v1 != v2;
+            else if (Token.Type == TokenType.Less)
+                return v1 < v2;
+            else if (Token.Type == TokenType.Less_Equal)
+                return v1 <= v2;
+            else if (Token.Type == TokenType.Greater)
+                return v1 > v2;
+            else if (Token.Type == TokenType.Greater_Equal)
+                return v1 >= v2;
+
+            throw new Exception("Not valid condition on line: " + Token.Line);
+
         }
 
     }

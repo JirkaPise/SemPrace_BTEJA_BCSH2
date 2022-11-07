@@ -1,9 +1,11 @@
-﻿using System;
+﻿using SemPrace_BTEJA_BCSH2.Interpreter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SemPrace_BTEJA_BCSH2.Parser
 {
@@ -17,7 +19,7 @@ namespace SemPrace_BTEJA_BCSH2.Parser
 
         public Expression? Expression { get; set; }
 
-        public FunctionCallStatement FunctionCallStatement { get; set; }
+        public FunctionCallStatement? FunctionCallStatement { get; set; }
 
         public Factor(FunctionCallStatement functionCallStatement)
         {
@@ -40,7 +42,7 @@ namespace SemPrace_BTEJA_BCSH2.Parser
             else if (Type == TokenType.Real_Number)
             {
                 double number;
-                if (double.TryParse(token.Value, out number))
+                if (double.TryParse(token.Value.Replace('.', ','), out number))
                     Value = number;
             }
             else if (Type == TokenType.String_Value)
@@ -73,6 +75,28 @@ namespace SemPrace_BTEJA_BCSH2.Parser
             if (rightBracket.Type != TokenType.Right_Bracket)
                 Parser.UnexpectedTokenError(rightBracket, TokenType.Right_Bracket);
             Expression = expression;
+        }
+
+        public object Evaluate(ExecutionCntxt context)
+        {
+            if (Value != null)
+                return Value;
+            if (Expression != null)
+                return Expression.Evaluate(context);
+            if (Identifier != null)
+            {
+                if (context.GetVar(Identifier) == null)
+                    throw new Exception("Variable " + Identifier + " not found in this context");
+                Type = context.GetVar(Identifier).Type;
+                return context.GetValue(Identifier);
+            }
+            if (FunctionCallStatement != null)
+            {
+                FunctionCallStatement.Evaluate(context);
+                Type = Variables.ConvertToValue(FunctionCallStatement.Type);
+                return FunctionCallStatement.returnedValue;
+            }
+            throw new Exception("Not valid factor");
         }
 
     }
