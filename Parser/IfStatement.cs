@@ -19,8 +19,9 @@ namespace SemPrace_BTEJA_BCSH2.Parser
             ElseStatements = elseStatements;
         }
 
-        public override void Evaluate(ExecutionCntxt context)
+        public override void Evaluate(ExecutionCntxt globalContext)
         {
+            ExecutionCntxt context = new ExecutionCntxt(globalContext.ProgramContext, globalContext);
             if (Condition.Evaluate(context))
             {
                 foreach (Statement s in IfStatements) { s.Evaluate(context); }

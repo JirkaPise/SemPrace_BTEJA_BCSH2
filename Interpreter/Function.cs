@@ -24,8 +24,9 @@ namespace SemPrace_BTEJA_BCSH2.Interpreter
             ReturnExpression = returnExpression;
         }
 
-        public object? Call(ExecutionCntxt context, List<Expression>? argumentValues)
+        public object? Call(ExecutionCntxt globalContext, List<Expression>? argumentValues)
         {
+            ExecutionCntxt context = new ExecutionCntxt(globalContext.ProgramContext, globalContext);
             LinkArgumetns(context, argumentValues);
             context.AddArguments(Arguments);
             foreach (Statement s in Statements)
@@ -39,7 +40,6 @@ namespace SemPrace_BTEJA_BCSH2.Interpreter
                 returnValue = ReturnExpression.Evaluate(context);
                 Variables.CheckType(returnValue, Variables.ConvertToValue(ReturnType));
             }
-            context.ClearArguments();
             return returnValue;
         }
 

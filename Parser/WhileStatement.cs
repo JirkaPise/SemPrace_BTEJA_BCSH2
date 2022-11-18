@@ -18,14 +18,16 @@ namespace SemPrace_BTEJA_BCSH2.Parser
             Statements = statements;
         }
 
-        public override void Evaluate(ExecutionCntxt context)
+        public override void Evaluate(ExecutionCntxt globalContext)
         {
+            ExecutionCntxt context = new ExecutionCntxt(globalContext.ProgramContext, globalContext);
             while (Condition.Evaluate(context))
             {
                 foreach (Statement s in Statements)
                 {
                     s.Evaluate(context);
                 }
+                context = new ExecutionCntxt(globalContext.ProgramContext, globalContext);
             }
         }
 

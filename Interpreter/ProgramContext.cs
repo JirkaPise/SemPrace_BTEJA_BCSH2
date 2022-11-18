@@ -1,6 +1,8 @@
-﻿using SemPrace_BTEJA_BCSH2.Parser;
+﻿using ReactiveUI;
+using SemPrace_BTEJA_BCSH2.Parser;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -14,18 +16,19 @@ namespace SemPrace_BTEJA_BCSH2.Interpreter
     {
         public List<Function> Functions { get; set; }
         public List<string> BuildInFunctions { get; set; }
+        public string ConsoleOutput { get; set; }
 
         public ProgramContext()
         {
             Functions = new List<Function>();
             BuildInFunctions = new List<string>();
             AddBuildInFunctions();
+            ConsoleOutput = "";
         }
 
-        public object? Call(string name, ExecutionCntxt globalContext, List<Expression> argumentValues)
+        public object? Call(string name, ExecutionCntxt context, List<Expression> argumentValues)
         {
 
-            ExecutionCntxt context = new ExecutionCntxt(globalContext.ProgramContext, globalContext);
             if (BuildInFunctions.Contains(name))
             {
                 return CallBuilInFunction(name, context, argumentValues);
@@ -49,11 +52,13 @@ namespace SemPrace_BTEJA_BCSH2.Interpreter
                     throw new Exception("Invalid amount of arguments in log function");
                 object input = argumentValues[0].Evaluate(context);
                 Console.WriteLine(input);
+                ConsoleOutput += input + "\n";
             }
             else if (name == "readLine")
             {
                 if (argumentValues.Count != 0)
                     throw new Exception("Invalid amount of arguments in readLine function");
+                ConsoleOutput += "\n";
                 return Console.ReadLine();
             }
             else if (name == "readFile")

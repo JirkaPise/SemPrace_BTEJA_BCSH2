@@ -67,6 +67,17 @@ namespace SemPrace_BTEJA_BCSH2.Parser
             object? value = Term1.Evaluate(context);
             Type = Term1.Type;
 
+            if (Type == TokenType.String_Value)
+            {
+                object s = null;
+                if (Term2 != null && Token2 != null && Token2.Type == TokenType.Plus)
+                    return (string)value + (string)Term2.Evaluate(context);
+                else if (ExpressionPrev != null && Token1 != null && Token1.Type == TokenType.Plus)
+                    return (string)ExpressionPrev.Evaluate(context) + (string)value;
+                else return value;
+
+            }
+
             if (Type != TokenType.Number && Type != TokenType.Real_Number)
                 return value;
 

@@ -13,7 +13,7 @@ namespace SemPrace_BTEJA_BCSH2.Interpreter
     {
         public ProgramContext ProgramContext { get; set; }
         public Variables Variables { get; set; }
-        private Variables Arguments { get; set; } //only for functions. After function is finished this will be empty again
+        public Variables Arguments { get; set; } //only for functions. After function is finished this will be empty again
         public ExecutionCntxt? GlobalExecutionContext { get; set; }
 
         public ExecutionCntxt(ProgramContext programContext, ExecutionCntxt? globalExecutionContext)
