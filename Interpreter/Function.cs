@@ -15,13 +15,12 @@ namespace SemPrace_BTEJA_BCSH2.Interpreter
         public List<Statement> Statements { get; set; }
         public Expression? ReturnExpression { get; set; }
 
-        public Function(string identifier, List<Argument> arguments, Token returnType, List<Statement> statements, Expression? returnExpression)
+        public Function(string identifier, List<Argument> arguments, Token returnType, List<Statement> statements)
         {
             Identifier = identifier;
             Arguments = arguments;
             ReturnType = returnType.Type;
             Statements = statements;
-            ReturnExpression = returnExpression;
         }
 
         public object? Call(ExecutionCntxt globalContext, List<Expression>? argumentValues)
@@ -29,18 +28,33 @@ namespace SemPrace_BTEJA_BCSH2.Interpreter
             ExecutionCntxt context = new ExecutionCntxt(globalContext.ProgramContext, globalContext);
             LinkArgumetns(context, argumentValues);
             context.AddArguments(Arguments);
+            object? returnValue = null;
             foreach (Statement s in Statements)
             {
-                s.Evaluate(context);
+                object? o = s.Evaluate(context);
+                if (o != null)
+                {
+                    if (o.GetType() == typeof(ReturnStatement) && ReturnType != TokenType.Void)
+                        throw new Exception("Cannot use empty retrun in " + ReturnType + " function. " + Identifier);
+                    if (o.GetType() != typeof(ReturnStatement) && ReturnType == TokenType.Void)
+                        throw new Exception("Cannot return value from VOID function " + Identifier);
+
+                    if (o.GetType() != typeof(ReturnStatement))
+                        returnValue = o;
+                    else
+                        return null;
+
+                    Variables.CheckType(returnValue, Variables.ConvertToValue(ReturnType));
+                    break;
+                }
             }
 
-            object? returnValue = null;
-            if (ReturnExpression != null)
-            {
-                returnValue = ReturnExpression.Evaluate(context);
-                Variables.CheckType(returnValue, Variables.ConvertToValue(ReturnType));
-            }
+            if (returnValue == null && ReturnType != TokenType.Void)
+                throw new Exception(ReturnType + " function " + Identifier + " must return some value");
+
+
             return returnValue;
+
         }
 
         // set Values to arguments

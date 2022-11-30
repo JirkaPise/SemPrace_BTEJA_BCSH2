@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using Avalonia.Threading;
+using ReactiveUI;
 using SemPrace_BTEJA_BCSH2.Parser;
 using System;
 using System.Collections.Generic;
@@ -12,18 +13,20 @@ using System.Xml.Linq;
 
 namespace SemPrace_BTEJA_BCSH2.Interpreter
 {
+
     public class ProgramContext
     {
         public List<Function> Functions { get; set; }
         public List<string> BuildInFunctions { get; set; }
-        public string ConsoleOutput { get; set; }
+
+        public outputDelegate Output { get; set; }
+        public inputDelegate Input { get; set; }
 
         public ProgramContext()
         {
             Functions = new List<Function>();
             BuildInFunctions = new List<string>();
             AddBuildInFunctions();
-            ConsoleOutput = "";
         }
 
         public object? Call(string name, ExecutionCntxt context, List<Expression> argumentValues)
@@ -51,15 +54,18 @@ namespace SemPrace_BTEJA_BCSH2.Interpreter
                 if (argumentValues.Count != 1)
                     throw new Exception("Invalid amount of arguments in log function");
                 object input = argumentValues[0].Evaluate(context);
-                Console.WriteLine(input);
-                ConsoleOutput += input + "\n";
+                Output(input.ToString());
+
             }
             else if (name == "readLine")
             {
                 if (argumentValues.Count != 0)
                     throw new Exception("Invalid amount of arguments in readLine function");
-                ConsoleOutput += "\n";
-                return Console.ReadLine();
+
+                string? input = Input();
+                if (input == null)
+                    throw new Exception("");
+                return input;
             }
             else if (name == "readFile")
             {
@@ -154,19 +160,19 @@ namespace SemPrace_BTEJA_BCSH2.Interpreter
 
         private void AddBuildInFunctions()
         {
-            Functions.Add(new Function("log", new List<Argument>(), new Token(TokenType.Void, -1), null, null));
+            Functions.Add(new Function("log", new List<Argument>(), new Token(TokenType.Void, -1), null));
             BuildInFunctions.Add("log");
-            Functions.Add(new Function("readLine", new List<Argument>(), new Token(TokenType.String, -1), null, null));
+            Functions.Add(new Function("readLine", new List<Argument>(), new Token(TokenType.String, -1), null));
             BuildInFunctions.Add("readLine");
-            Functions.Add(new Function("writeFile", new List<Argument>(), new Token(TokenType.Void, -1), null, null));
+            Functions.Add(new Function("writeFile", new List<Argument>(), new Token(TokenType.Void, -1), null));
             BuildInFunctions.Add("writeFile");
-            Functions.Add(new Function("readFile", new List<Argument>(), new Token(TokenType.String, -1), null, null));
+            Functions.Add(new Function("readFile", new List<Argument>(), new Token(TokenType.String, -1), null));
             BuildInFunctions.Add("readFile");
-            Functions.Add(new Function("toInt", new List<Argument>(), new Token(TokenType.Int, -1), null, null));
+            Functions.Add(new Function("toInt", new List<Argument>(), new Token(TokenType.Int, -1), null));
             BuildInFunctions.Add("toInt");
-            Functions.Add(new Function("toString", new List<Argument>(), new Token(TokenType.String, -1), null, null));
+            Functions.Add(new Function("toString", new List<Argument>(), new Token(TokenType.String, -1), null));
             BuildInFunctions.Add("toString");
-            Functions.Add(new Function("toDouble", new List<Argument>(), new Token(TokenType.Double, -1), null, null));
+            Functions.Add(new Function("toDouble", new List<Argument>(), new Token(TokenType.Double, -1), null));
             BuildInFunctions.Add("toDouble");
         }
 

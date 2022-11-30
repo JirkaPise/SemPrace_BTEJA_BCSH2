@@ -48,9 +48,15 @@ namespace SemPrace_BTEJA_BCSH2.Parser
             object Value1 = Expression1.Evaluate(context);
             object Value2 = Expression2.Evaluate(context);
 
-            if (Expression1.Type == TokenType.String_Value || Expression2.Type == TokenType.String_Value)
+            if (Expression1.Type == TokenType.String_Value && Expression2.Type == TokenType.String_Value)
             {
-                throw new Exception("Cannot compare strings");
+                if (Token.Type == TokenType.Equal_Equal)
+                    return (string)Value1 == (string)Value2;
+                else if (Token.Type == TokenType.Not_Equal)
+                    return (string)Value1 != (string)Value2;
+
+                throw new Exception("Not valid condition on line: " + Token.Line +
+                    "\n Cannot compare strings like this");
             }
 
             double v1 = Convert.ToDouble(Value1);

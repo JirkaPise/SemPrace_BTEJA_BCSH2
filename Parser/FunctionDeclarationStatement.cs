@@ -9,11 +9,10 @@ namespace SemPrace_BTEJA_BCSH2.Parser
         public List<Argument> Arguments { get; set; }
         public Token ReturnType { get; set; }
         public List<Statement> Statements { get; set; }
-        public Expression? ReturnExpression { get; set; }
 
         public FunctionDeclarationStatement(Token identifier,
             List<Argument> arguments, Token returnType,
-            List<Statement> statements, Expression? returnExpression)
+            List<Statement> statements)
         {
             if (identifier == null || identifier.Type != TokenType.Ident || identifier.Value == null)
                 Parser.UnexpectedTokenError(identifier, TokenType.Ident);
@@ -25,16 +24,16 @@ namespace SemPrace_BTEJA_BCSH2.Parser
                     "\nError on line: " + returnType.Line);
             ReturnType = returnType;
             Statements = statements;
-            ReturnExpression = returnExpression;
         }
 
-        public override void Evaluate(ExecutionCntxt context)
+        public override object? Evaluate(ExecutionCntxt context)
         {
             if (context.GetFunction(Identifier) != null)
                 throw new Exception("Funkce " + Identifier + " already exists");
 
             context.ProgramContext.Functions.Add(new Function(Identifier,
-                Arguments, ReturnType, Statements, ReturnExpression));
+                Arguments, ReturnType, Statements));
+            return null;
         }
     }
 }

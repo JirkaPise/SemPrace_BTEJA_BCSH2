@@ -20,7 +20,7 @@ namespace SemPrace_BTEJA_BCSH2.Parser
             Expression = expression;
         }
 
-        public override void Evaluate(ExecutionCntxt context)
+        public override object? Evaluate(ExecutionCntxt context)
         {
             Var? v = context.GetVar(Identifier);
             if (v == null)
@@ -30,7 +30,7 @@ namespace SemPrace_BTEJA_BCSH2.Parser
             object? value = Expression.Evaluate(context);
             Variables.CheckType(value, type);
             context.GetVar(Identifier).Value = value;
-
+            return null;
         }
 
 

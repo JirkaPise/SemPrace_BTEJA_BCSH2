@@ -1,3 +1,1 @@
-let x: int = 4;
-
-log(log(x));
+Petr má pěkný svetr.

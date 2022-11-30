@@ -28,7 +28,7 @@ namespace SemPrace_BTEJA_BCSH2.Parser
             Expression = expression;
         }
 
-        public override void Evaluate(ExecutionCntxt context)
+        public override object? Evaluate(ExecutionCntxt context)
         {
             if (context.GetVar(Identifier) != null)
             {
@@ -44,6 +44,7 @@ namespace SemPrace_BTEJA_BCSH2.Parser
                 Variables.CheckType(value, Variables.ConvertToValue(Type));
                 context.Variables.SetVar(Identifier, value, Variables.ConvertToValue(Type));
             }
+            return null;
         }
 
     }

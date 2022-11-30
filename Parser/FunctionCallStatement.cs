@@ -32,10 +32,11 @@ namespace SemPrace_BTEJA_BCSH2.Parser
             ArgumentExpressions = arguments;
         }
 
-        public override void Evaluate(ExecutionCntxt context)
+        public override object? Evaluate(ExecutionCntxt context)
         {
             returnedValue = context.ProgramContext.Call(Identifier, context, ArgumentExpressions);
             Type = context.GetFunction(Identifier).ReturnType;
+            return null;
         }
 
     }

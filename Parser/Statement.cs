@@ -9,6 +9,6 @@ namespace SemPrace_BTEJA_BCSH2.Parser
 {
     public class Statement
     {
-        public virtual void Evaluate(ExecutionCntxt context) { }
+        public virtual object? Evaluate(ExecutionCntxt context) { return null; }
     }
 }

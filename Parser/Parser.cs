@@ -31,9 +31,25 @@ namespace SemPrace_BTEJA_BCSH2.Parser
                 case TokenType.Function: return ReadFunctionDeclarationStatement();
                 case TokenType.If: return ReadIfStatement();
                 case TokenType.While: return ReadWhileStatement();
+                case TokenType.Return: return ReadReturnStatement();
             }
             UnexpectedTokenError(PeekToken());
             return null;
+        }
+
+        private ReturnStatement ReadReturnStatement()
+        {
+            ReadToken(); // return
+            if (PeekToken().Type == TokenType.Semi_Colon)
+            {
+                CheckToken(ReadToken(), TokenType.Semi_Colon);
+                return new ReturnStatement(null);
+            }
+
+            Expression e = ReadExpression();
+            CheckToken(ReadToken(), TokenType.Semi_Colon);
+            return new ReturnStatement(e);
+
         }
 
         private LetStatement ReadLetStatement()
@@ -128,26 +144,14 @@ namespace SemPrace_BTEJA_BCSH2.Parser
             CheckToken(ReadToken(), TokenType.Left_Curly_Bracket); // {
             List<Statement> statements = new List<Statement>();
             while (PeekToken() != null
-                && PeekToken().Type != TokenType.Return && PeekToken().Type != TokenType.Right_Curly_Bracket)
+                && PeekToken().Type != TokenType.Right_Curly_Bracket)
             {
-                if (PeekToken().Type == TokenType.Right_Curly_Bracket && returnType.Type != TokenType.Void)
-                    throw new Exception("Missing return in function");
                 statements.Add(ReadStatement());
             }
 
-            if (returnType.Type != TokenType.Void)
-            {
-                CheckToken(ReadToken(), TokenType.Return); // return
-                Expression returnExpression = ReadExpression(); // 4
-                CheckToken(ReadToken(), TokenType.Semi_Colon); // ;
-                CheckToken(ReadToken(), TokenType.Right_Curly_Bracket); // }
-                return new FunctionDeclarationStatement(identifier, arguments, returnType, statements, returnExpression);
-            }
-            else
-            {
-                CheckToken(ReadToken(), TokenType.Right_Curly_Bracket); // }
-                return new FunctionDeclarationStatement(identifier, arguments, returnType, statements, null);
-            }
+            CheckToken(ReadToken(), TokenType.Right_Curly_Bracket); // }
+            return new FunctionDeclarationStatement(identifier, arguments, returnType, statements);
+
 
         }
 

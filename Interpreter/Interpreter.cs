@@ -7,18 +7,27 @@ using System.Threading.Tasks;
 
 namespace SemPrace_BTEJA_BCSH2.Interpreter
 {
+    public delegate void outputDelegate(string text);
+    public delegate string? inputDelegate();
+
     public class Interpreter
     {
         private Lexer lexer;
         private SemPrace_BTEJA_BCSH2.Parser.Parser parser;
 
         private string path;
-        public string ConsoleOutput => ProgramContext.ConsoleOutput;
-        private ProgramContext ProgramContext { get; set; }
+
+        public outputDelegate Output { get; set; }
+        public inputDelegate Input { get; set; }
+
+
+        public ProgramContext ProgramContext { get; set; }
 
         public Interpreter()
         {
             ProgramContext = new();
+            Output = new outputDelegate(Console.WriteLine);
+            Input = new inputDelegate(Console.ReadLine);
         }
 
         public string Path
@@ -34,7 +43,6 @@ namespace SemPrace_BTEJA_BCSH2.Interpreter
             }
         }
 
-
         private string code;
 
         public string Code
@@ -43,21 +51,20 @@ namespace SemPrace_BTEJA_BCSH2.Interpreter
             set { code = value; }
         }
 
-        public bool CodeIsRunning { get; set; }
-
         public void Interpret()
         {
-            CodeIsRunning = true;
             lexer = new Lexer();
             parser = new SemPrace_BTEJA_BCSH2.Parser.Parser();
             List<Token> tokens = lexer.ScanTokens(code);
 
             var p = parser.Parse(tokens);
             ProgramContext = new ProgramContext();
+            ProgramContext.Output = Output;
+            ProgramContext.Input = Input;
+            Output("*Program is running*\n");
             ExecutionCntxt c = new ExecutionCntxt(ProgramContext, null);
             p.Evaluate(c);
-            ProgramContext.ConsoleOutput += "\n*Program finished*\n";
-            CodeIsRunning = false;
+            Output("\n*Program finished*");
         }
 
 

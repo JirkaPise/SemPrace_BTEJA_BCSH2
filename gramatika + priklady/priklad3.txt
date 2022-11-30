@@ -3,7 +3,6 @@ let b: double = 2.0;
 let c: double = 0.0;
 let d: double;
 
-
 function pow(a: double): double{
     return multiply(a, a);    
 }
