@@ -1,1 +1,0 @@
-Petr má pěkný svetr.
