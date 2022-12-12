@@ -55,7 +55,17 @@ namespace SemPrace_BTEJA_BCSH2.Parser
             Type = Factor1.Type;
 
             if (Type != TokenType.Number && Type != TokenType.Real_Number)
+            {
+                if (Type == TokenType.String_Value && (TermPrev != null || Factor2 != null))
+                {
+                    throw new Exception("Strigns can only have + in between them");
+                }
+                else if ((Type == TokenType.True || Type == TokenType.False) && (TermPrev != null || Factor2 != null))
+                {
+                    throw new Exception("Boolean values cannot be part of the expresion like this");
+                }
                 return value;
+            }
 
             if (Factor2 != null)
             {
