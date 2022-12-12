@@ -71,15 +71,23 @@ namespace SemPrace_BTEJA_BCSH2.Parser
             {
                 object s = null;
                 if (Term2 != null && Token2 != null && Token2.Type == TokenType.Plus)
-                    return (string)value + (string)Term2.Evaluate(context);
+                    return (string)value + (string)Term2.Evaluate(context); //throws unable to cast exception
                 else if (ExpressionPrev != null && Token1 != null && Token1.Type == TokenType.Plus)
-                    return (string)ExpressionPrev.Evaluate(context) + (string)value;
+                    return (string)ExpressionPrev.Evaluate(context) + (string)value; //throws unable to cast exception
+                else if (Term2 != null && Token2 != null && Token2.Type != TokenType.Plus)
+                    throw new Exception("Strigns can only have + in between them");
+                else if (ExpressionPrev != null && Token1 != null && Token1.Type != TokenType.Plus)
+                    throw new Exception("Strigns can only have + in between them");
                 else return value;
 
             }
 
-            if (Type != TokenType.Number && Type != TokenType.Real_Number)
+            if (Type != TokenType.Number && Type != TokenType.Real_Number) // is bool..
+            {
+                if (Term2 != null || ExpressionPrev != null)
+                    throw new Exception("Boolean values cannot be part of the expresion like this");
                 return value;
+            }
 
             if (Token1 != null && Token1.Type == TokenType.Minus)
             {

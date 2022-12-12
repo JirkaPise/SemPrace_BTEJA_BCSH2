@@ -1,1 +1,3 @@
-Petr má pěkný svetr.
+log("aa");
+let s: string = "ahoj" + 4;
+log(s);
